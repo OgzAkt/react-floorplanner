@@ -1,75 +1,83 @@
-import React, {Component} from 'react';
-import PropTypes from 'prop-types';
-import {bindActionCreators} from 'redux';
-import {connect} from 'react-redux';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
 
-import Translator from './translator/translator';
-import Catalog from './catalog/catalog';
-import actions from './actions/export';
-import {objectsMap} from './utils/objects-utils';
+import Translator from "./translator/translator";
+import Catalog from "./catalog/catalog";
+import actions from "./actions/export";
+import { objectsMap } from "./utils/objects-utils";
 import {
   ToolbarComponents,
   Content,
   SidebarComponents,
-  FooterBarComponents
-} from './components/export';
-import {VERSION} from './version';
+  FooterBarComponents,
+} from "./components/export";
+import { VERSION } from "./version";
 
-const {Toolbar} = ToolbarComponents;
-const {Sidebar} = SidebarComponents;
-const {FooterBar} = FooterBarComponents;
+const { Toolbar } = ToolbarComponents;
+const { Sidebar } = SidebarComponents;
+const { FooterBar } = FooterBarComponents;
 
-const toolbarW = 50;
+const toolbarW = 400;
 const sidebarW = 300;
-const footerBarH= 20;
+const footerBarH = 20;
 
 const wrapperStyle = {
-  display: 'flex',
-  flexFlow: 'row nowrap'
+  display: "flex",
+  flexFlow: "row nowrap",
 };
 
 class ReactPlanner extends Component {
-
   getChildContext() {
     return {
-      ...objectsMap(actions, actionNamespace => this.props[actionNamespace]),
+      ...objectsMap(actions, (actionNamespace) => this.props[actionNamespace]),
       translator: this.props.translator,
       catalog: this.props.catalog,
-    }
+    };
   }
 
   componentWillMount() {
-    let {store} = this.context;
-    let {projectActions, catalog, stateExtractor, plugins} = this.props;
-    plugins.forEach(plugin => plugin(store, stateExtractor));
+    let { store } = this.context;
+    let { projectActions, catalog, stateExtractor, plugins } = this.props;
+    plugins.forEach((plugin) => plugin(store, stateExtractor));
     projectActions.initCatalog(catalog);
   }
 
   componentWillReceiveProps(nextProps) {
-    let {stateExtractor, state, projectActions, catalog} = nextProps;
+    let { stateExtractor, state, projectActions, catalog } = nextProps;
     let plannerState = stateExtractor(state);
-    let catalogReady = plannerState.getIn(['catalog', 'ready']);
+    let catalogReady = plannerState.getIn(["catalog", "ready"]);
     if (!catalogReady) {
       projectActions.initCatalog(catalog);
     }
   }
 
   render() {
-    let {width, height, state, stateExtractor, ...props} = this.props;
+    let { width, height, state, stateExtractor, ...props } = this.props;
 
-    let contentW = width - toolbarW - sidebarW;
-    let toolbarH = height - footerBarH;
-    let contentH = height - footerBarH;
-    let sidebarH = height - footerBarH;
+    let contentW = width - toolbarW;
+    let toolbarH = height;
+    let contentH = height;
+    let sidebarH = height;
 
     let extractedState = stateExtractor(state);
 
     return (
-      <div style={{...wrapperStyle, height}}>
-        <Toolbar width={toolbarW} height={toolbarH} state={extractedState} {...props} />
-        <Content width={contentW} height={contentH} state={extractedState} {...props} onWheel={event => event.preventDefault()} />
-        <Sidebar width={sidebarW} height={sidebarH} state={extractedState} {...props} />
-        <FooterBar width={width} height={footerBarH} state={extractedState} {...props} />
+      <div style={{ ...wrapperStyle, height }}>
+        <Toolbar
+          width={toolbarW}
+          height={toolbarH}
+          state={extractedState}
+          {...props}
+        />
+        <Content
+          width={contentW}
+          height={contentH}
+          state={extractedState}
+          {...props}
+          onWheel={(event) => event.preventDefault()}
+        />
       </div>
     );
   }
@@ -89,7 +97,7 @@ ReactPlanner.propTypes = {
   sidebarComponents: PropTypes.array,
   footerbarComponents: PropTypes.array,
   customContents: PropTypes.object,
-  softwareSignature: PropTypes.string
+  softwareSignature: PropTypes.string,
 };
 
 ReactPlanner.contextTypes = {
@@ -117,12 +125,14 @@ ReactPlanner.defaultProps = {
 //redux connect
 function mapStateToProps(reduxState) {
   return {
-    state: reduxState
-  }
+    state: reduxState,
+  };
 }
 
 function mapDispatchToProps(dispatch) {
-  return objectsMap(actions, actionNamespace => bindActionCreators(actions[actionNamespace], dispatch));
+  return objectsMap(actions, (actionNamespace) =>
+    bindActionCreators(actions[actionNamespace], dispatch)
+  );
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ReactPlanner);
