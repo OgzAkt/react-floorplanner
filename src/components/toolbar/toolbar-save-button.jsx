@@ -16,6 +16,8 @@ export default function ToolbarSaveButton(
       .update("layers", (layers) => layers.map((layer) => unselectAll(layer)))
       .toJS();
 
+    console.log(JSON.stringify(scene));
+
     browserDownload(scene);
   };
 

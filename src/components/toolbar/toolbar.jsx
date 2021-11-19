@@ -202,11 +202,12 @@ export default class Toolbar extends Component {
           </ToolbarButton>
         ),
       },
-      /*{
+      {
         index: 8,
         condition: true,
         dom: (
           <ToolbarButton
+            name="Proje Ayarlari"
             active={[MODE_CONFIGURING_PROJECT].includes(mode)}
             tooltip={translator.t("Configure project")}
             onClick={(event) => projectActions.openProjectConfigurator()}
@@ -214,7 +215,7 @@ export default class Toolbar extends Component {
             <IconConfigure />
           </ToolbarButton>
         ),
-      },*/
+      },
     ];
 
     sorter = sorter.concat(

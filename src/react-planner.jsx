@@ -78,6 +78,12 @@ class ReactPlanner extends Component {
           {...props}
           onWheel={(event) => event.preventDefault()}
         />
+        <Sidebar
+          width={sidebarW}
+          height={sidebarH}
+          state={extractedState}
+          {...props}
+        />
       </div>
     );
   }
