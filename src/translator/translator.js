@@ -1,15 +1,17 @@
-import EN from './en';
-import IT from './it';
+import EN from "./en";
+import IT from "./it";
+import TR from "./tr";
 
-const DEFAULT_LOCALE = 'en';
+const DEFAULT_LOCALE = "tr";
 
 export default class Translator {
   constructor() {
     this.locale = null;
     this.translations = {};
 
-    this.registerTranslation('en', EN);
-    this.registerTranslation('it', IT);
+    this.registerTranslation("en", EN);
+    this.registerTranslation("it", IT);
+    this.registerTranslation("tr", TR);
 
     let locale = null;
     let languages = Translator.getBrowserLanguages();
@@ -40,11 +42,12 @@ export default class Translator {
 
     let translatedPhrase = translation[phrase];
 
-    translatedPhrase = translatedPhrase.replace(/{(\d+)}/g, function (match, number) {
-      return typeof params[number] != 'undefined'
-        ? params[number]
-        : match;
-    });
+    translatedPhrase = translatedPhrase.replace(
+      /{(\d+)}/g,
+      function (match, number) {
+        return typeof params[number] != "undefined" ? params[number] : match;
+      }
+    );
 
     return translatedPhrase;
   }
@@ -55,7 +58,9 @@ export default class Translator {
     if (this.translations.hasOwnProperty(locale)) {
       this.locale = locale;
     } else {
-      console.warn(`locale '${locale}' not available, switch to ${DEFAULT_LOCALE}`);
+      console.warn(
+        `locale '${locale}' not available, switch to ${DEFAULT_LOCALE}`
+      );
       this.locale = DEFAULT_LOCALE.toLowerCase();
     }
   }
@@ -71,6 +76,6 @@ export default class Translator {
   static getBrowserLanguages() {
     return navigator.languages
       ? navigator.languages
-      : ([(navigator.language || navigator.userLanguage)])
+      : [navigator.language || navigator.userLanguage];
   }
 }

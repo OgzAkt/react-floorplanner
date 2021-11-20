@@ -1,36 +1,33 @@
-import React from 'react';
-import * as SharedStyle from '../../shared-style';
+import React from "react";
+import * as SharedStyle from "../../shared-style";
 
-const STYLE = {borderTop: '1px solid #222', borderBottom: '1px solid #48494E'};
+const STYLE = {};
 const STYLE_TITLE = {
-  fontSize: '11px',
-  color: SharedStyle.PRIMARY_COLOR.text_alt,
-  padding: '5px 15px 8px 15px',
-  backgroundColor: SharedStyle.PRIMARY_COLOR.alt,
-  textShadow: '-1px -1px 2px rgba(0, 0, 0, 1)',
-  boxShadow: 'inset 0px -3px 19px 0px rgba(0,0,0,0.5)',
-  margin: '0px'
+  fontSize: "11px",
+  color: "black",
+  padding: "5px 15px 8px 15px",
+  backgroundColor: "rgba(246, 246, 246)",
+  borderTopLeftRadius: "15px",
+  borderTopRightRadius: "15px",
+  margin: "0px",
 };
 const STYLE_CONTENT = {
-  fontSize: '11px',
-  color: SharedStyle.PRIMARY_COLOR.text_alt,
-  border: '1px solid #222',
-  padding: '0px',
-  backgroundColor: SharedStyle.PRIMARY_COLOR.alt,
-  textShadow: '-1px -1px 2px rgba(0, 0, 0, 1)'
+  fontSize: "11px",
+  color: "black",
+  borderBottomLeftRadius: "15px",
+  borderBottomRightRadius: "15px",
+  padding: "0px",
+  backgroundColor: "rgba(246, 246, 246)",
 };
 
-export default function Panel({name, headComponents, children}) {
+export default function Panel({ name, headComponents, children }) {
   return (
     <div style={STYLE}>
       <h3 style={STYLE_TITLE}>
         {name}
         {headComponents}
       </h3>
-
-      <div style={STYLE_CONTENT}>
-        {children}
-      </div>
+      <div style={STYLE_CONTENT}>{children}</div>
     </div>
-  )
+  );
 }

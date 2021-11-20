@@ -94,6 +94,7 @@
     "react-container-dimensions": "1.3.2",
     "react-dom": "16.x",
     "react-icons": "^2.2.7",
+    "react-modal": "^3.14.4",
     "react-numeric-input": "2.2.0",
     "react-redux": "5.0.6",
     "react-svg-pan-zoom": "2.13.0",

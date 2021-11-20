@@ -1,4 +1,4 @@
-import {Seq, Map, List} from "immutable";
+import { Seq, Map, List } from "immutable";
 import {
   LOAD_PROJECT,
   NEW_PROJECT,
@@ -27,10 +27,10 @@ import {
   THROW_WARNING,
   COPY_PROPERTIES,
   PASTE_PROPERTIES,
-  PUSH_LAST_SELECTED_CATALOG_ELEMENT_TO_HISTORY
-} from '../constants';
+  PUSH_LAST_SELECTED_CATALOG_ELEMENT_TO_HISTORY,
+} from "../constants";
 
-import {State, Scene, Guide, Catalog} from "../models";
+import { State, Scene, Guide, Catalog } from "../models";
 
 import {
   removeLine,
@@ -47,11 +47,10 @@ import {
   loadLayerFromJSON,
   setPropertiesOnSelected,
   updatePropertiesOnSelected,
-  setAttributesOnSelected
-} from '../utils/layer-operations';
+  setAttributesOnSelected,
+} from "../utils/layer-operations";
 
 export default function (state, action) {
-
   switch (action.type) {
     case NEW_PROJECT:
       return newProject(state);
@@ -63,17 +62,21 @@ export default function (state, action) {
       return openCatalog(state);
 
     case CHANGE_CATALOG_PAGE:
-      return state.setIn(['catalog', 'page'], action.newPage)
-        .updateIn(['catalog', 'path'], path => path.push(action.oldPage));
+      return state
+        .setIn(["catalog", "page"], action.newPage)
+        .updateIn(["catalog", "path"], (path) => path.push(action.oldPage));
 
     case GO_BACK_TO_CATALOG_PAGE:
       let path = state.catalog.path;
-      let pageIndex = state.catalog.path.findIndex(page => page === action.newPage);
-      return state.setIn(['catalog', 'page'], action.newPage)
-        .updateIn(['catalog', 'path'], path => path.take(pageIndex));
+      let pageIndex = state.catalog.path.findIndex(
+        (page) => page === action.newPage
+      );
+      return state
+        .setIn(["catalog", "page"], action.newPage)
+        .updateIn(["catalog", "path"], (path) => path.take(pageIndex));
 
     case SELECT_TOOL_EDIT:
-      return state.set('mode', MODE_IDLE);
+      return state.set("mode", MODE_IDLE);
 
     case UNSELECT_ALL:
       return unselectAll(state);
@@ -134,13 +137,11 @@ export default function (state, action) {
 
     default:
       return state;
-
   }
 }
 
 function openCatalog(state) {
-  return rollback(state)
-    .set('mode', MODE_VIEWING_CATALOG);
+  return rollback(state).set("mode", MODE_VIEWING_CATALOG);
 }
 
 function newProject(state) {
@@ -148,84 +149,111 @@ function newProject(state) {
 }
 
 function loadProject(state, sceneJSON) {
-  return new State({scene: sceneJSON, catalog: state.catalog.toJS()});
+  return new State({ scene: sceneJSON, catalog: state.catalog.toJS() });
 }
 
 function setProperties(state, properties) {
   let scene = state.scene;
-  scene = scene.set('layers', scene.layers.map(layer => setPropertiesOnSelected(layer, properties)));
+  scene = scene.set(
+    "layers",
+    scene.layers.map((layer) => setPropertiesOnSelected(layer, properties))
+  );
   return state.merge({
     scene,
-    sceneHistory: state.sceneHistory.push(scene)
-  })
+    sceneHistory: state.sceneHistory.push(scene),
+  });
 }
 
 function updateProperties(state, properties) {
   let scene = state.scene;
-  scene = scene.set('layers', scene.layers.map(layer => updatePropertiesOnSelected(layer, properties)));
+  scene = scene.set(
+    "layers",
+    scene.layers.map((layer) => updatePropertiesOnSelected(layer, properties))
+  );
   return state.merge({
     scene,
-    sceneHistory: state.sceneHistory.push(scene)
-  })
+    sceneHistory: state.sceneHistory.push(scene),
+  });
 }
 
 function setItemsAttributes(state, attributes) {
   let scene = state.scene;
-  scene = scene.set('layers', scene.layers.map(layer => setAttributesOnSelected(layer, attributes, state.catalog)));
+  scene = scene.set(
+    "layers",
+    scene.layers.map((layer) =>
+      setAttributesOnSelected(layer, attributes, state.catalog)
+    )
+  );
   return state.merge({
     scene,
-    sceneHistory: state.sceneHistory.push(scene)
+    sceneHistory: state.sceneHistory.push(scene),
   });
 }
 
 function setLinesAttributes(state, attributes) {
   let scene = state.scene;
 
-  scene = scene.set('layers', scene.layers.map(layer => setAttributesOnSelected(layer, attributes, state.catalog)));
+  scene = scene.set(
+    "layers",
+    scene.layers.map((layer) =>
+      setAttributesOnSelected(layer, attributes, state.catalog)
+    )
+  );
 
   return state.merge({
     scene,
-    sceneHistory: state.sceneHistory.push(scene)
+    sceneHistory: state.sceneHistory.push(scene),
   });
 }
 
 function setHolesAttributes(state, attributes) {
   let scene = state.scene;
-  scene = scene.set('layers', scene.layers.map(layer => setAttributesOnSelected(layer, attributes, state.catalog)));
+  scene = scene.set(
+    "layers",
+    scene.layers.map((layer) =>
+      setAttributesOnSelected(layer, attributes, state.catalog)
+    )
+  );
   return state.merge({
     scene,
-    sceneHistory: state.sceneHistory.push(scene)
+    sceneHistory: state.sceneHistory.push(scene),
   });
 }
 
 function unselectAll(state) {
   let scene = state.scene;
 
-  scene = scene.update('layers', layer => layer.map(unselectAllOp));
+  scene = scene.update("layers", (layer) => layer.map(unselectAllOp));
 
   return state.merge({
     scene,
-    sceneHistory: state.sceneHistory.push(scene)
-  })
+    sceneHistory: state.sceneHistory.push(scene),
+  });
 }
 
 function remove(state) {
   let scene = state.scene;
   let catalog = state.catalog;
 
-  scene = scene.updateIn(['layers', scene.selectedLayer], layer => layer.withMutations(layer => {
-    let {lines: selectedLines, holes: selectedHoles, items: selectedItems} = layer.selected;
-    unselectAllOp(layer);
-    selectedLines.forEach(lineID => removeLine(layer, lineID));
-    selectedHoles.forEach(holeID => removeHole(layer, holeID));
-    selectedItems.forEach(itemID => removeItem(layer, itemID));
-    detectAndUpdateAreas(layer, catalog);
-  }));
+  scene = scene.updateIn(["layers", scene.selectedLayer], (layer) =>
+    layer.withMutations((layer) => {
+      let {
+        lines: selectedLines,
+        holes: selectedHoles,
+        items: selectedItems,
+      } = layer.selected;
+      unselectAllOp(layer);
+      selectedLines.forEach((lineID) => removeLine(layer, lineID));
+      selectedHoles.forEach((holeID) => removeHole(layer, holeID));
+      selectedItems.forEach((itemID) => removeItem(layer, itemID));
+      detectAndUpdateAreas(layer, catalog);
+    })
+  );
 
   return state.merge({
     scene,
-    sceneHistory: state.sceneHistory.push(scene)
-  })
+    sceneHistory: state.sceneHistory.push(scene),
+  });
 }
 
 function undo(state) {
@@ -248,7 +276,7 @@ function undo(state) {
       return state.merge({
         mode: MODE_IDLE,
         scene: sceneHistory.last(),
-        sceneHistory: sceneHistory.pop()
+        sceneHistory: sceneHistory.pop(),
       });
   }
 }
@@ -260,7 +288,7 @@ export function rollback(state) {
 
   let scene = sceneHistory
     .last()
-    .update('layers', layer => layer.map(unselectAllOp));
+    .update("layers", (layer) => layer.map(unselectAllOp));
 
   return state.merge({
     mode: MODE_IDLE,
@@ -279,7 +307,7 @@ function setProjectProperties(state, properties) {
   return state.merge({
     mode: MODE_IDLE,
     scene,
-    sceneHistory: state.sceneHistory.push(scene)
+    sceneHistory: state.sceneHistory.push(scene),
   });
 }
 
@@ -290,46 +318,56 @@ function openProjectConfigurator(state) {
 }
 
 function initCatalog(state, catalog) {
-  return state.set('catalog', new Catalog(catalog));
+  return state.set("catalog", new Catalog(catalog));
 }
 
 function updateMouseCoord(state, coords) {
-  return state.set('mouse', new Map(coords));
+  return state.set("mouse", new Map(coords));
 }
 
 function updateZoomScale(state, scale) {
-  return state.set('zoom', scale);
+  return state.set("zoom", scale);
 }
 
 function toggleSnap(state, mask) {
-  return state.set('snapMask', mask);
+  return state.set("snapMask", mask);
 }
 
 function throwError(state, error) {
-  return state.set('errors', state.get('errors').push({
-    date: Date.now(),
-    error
-  }));
+  return state.set(
+    "errors",
+    state.get("errors").push({
+      date: Date.now(),
+      error,
+    })
+  );
 }
 
-const throwWarning = (state, warning) => state.set('warnings', state.get('warnings').push({
-  date: Date.now(),
-  warning
-}));
+const throwWarning = (state, warning) =>
+  state.set(
+    "warnings",
+    state.get("warnings").push({
+      date: Date.now(),
+      warning,
+    })
+  );
 
-const copyProperties = (state, properties) => state.set('clipboardProperties', properties.toJS());
+const copyProperties = (state, properties) =>
+  state.set("clipboardProperties", properties.toJS());
 
-const pasteProperties = (state) => updateProperties(state, state.get('clipboardProperties'));
+const pasteProperties = (state) =>
+  updateProperties(state, state.get("clipboardProperties"));
 
-const pushLastSelectedCatalogElementToHistory = ( state, element ) => {
+const pushLastSelectedCatalogElementToHistory = (state, element) => {
   let currHistory = state.selectedElementsHistory;
 
-  let previousPosition = currHistory.findIndex( el => el.name === element.name );
-  if( previousPosition !== -1 )
-  {
-    currHistory = currHistory.splice( previousPosition, 1 );
+  let previousPosition = currHistory.findIndex(
+    (el) => el.name === element.name
+  );
+  if (previousPosition !== -1) {
+    currHistory = currHistory.splice(previousPosition, 1);
   }
-  currHistory = currHistory.splice( 0, 0, element );
+  currHistory = currHistory.splice(0, 0, element);
 
-  return state.set('selectedElementsHistory', currHistory);
+  return state.set("selectedElementsHistory", currHistory);
 };

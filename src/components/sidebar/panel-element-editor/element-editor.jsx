@@ -17,7 +17,6 @@ const PRECISION = 2;
 
 const attrPorpSeparatorStyle = {
   margin: "0.5em 0.25em 0.5em 0",
-  border: "2px solid " + SharedStyle.SECONDARY_COLOR.alt,
   position: "relative",
   height: "2.5em",
   borderRadius: "2px",
@@ -473,9 +472,10 @@ export default class ElementEditor extends Component {
           attributeFormData={attributesFormData}
           state={appState}
         />
-
+        {/*
         <div style={attrPorpSeparatorStyle}>
           <div style={headActionStyle}>
+            
             <div
               title={translator.t("Copy")}
               style={iconHeadStyle}
@@ -483,6 +483,8 @@ export default class ElementEditor extends Component {
             >
               <MdContentCopy />
             </div>
+            
+
             {appState.get("clipboardProperties") ? (
               <div
                 title={translator.t("Paste")}
@@ -494,6 +496,7 @@ export default class ElementEditor extends Component {
             ) : null}
           </div>
         </div>
+        */}
 
         {propertiesFormData.entrySeq().map(([propertyName, data]) => {
           let currentValue = data.get("currentValue"),

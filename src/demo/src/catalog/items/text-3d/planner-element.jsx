@@ -28,22 +28,22 @@ export default {
 
   properties: {
     text: {
-      label: "text",
+      label: "Yazı",
       type: "string",
       defaultValue: "Custom Text",
     },
     fontSize: {
-      label: "font size",
+      label: "Yazı Boyutu",
       type: "number",
       defaultValue: defaultFontSize,
     },
     color: {
-      label: "text color",
+      label: "Yazı Renkı",
       type: "color",
       defaultValue: defaultColor,
     },
     altitude: {
-      label: "altitude",
+      label: "Yükseklik",
       type: "length-measure",
       defaultValue: {
         length: 0,

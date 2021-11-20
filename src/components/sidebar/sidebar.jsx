@@ -22,7 +22,7 @@ export default function Sidebar({ state, width, height, sidebarComponents }) {
         ...STYLE,
         backgroundColor: "transparent",
         position: "absolute",
-        right: 0,
+        right: 10,
         top: 150,
       }}
       onKeyDown={(event) => event.stopPropagation()}

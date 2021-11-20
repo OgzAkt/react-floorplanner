@@ -1,119 +1,124 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import CatalogItem from './catalog-item';
-import CatalogBreadcrumb from './catalog-breadcrumb';
-import CatalogPageItem from './catalog-page-item';
-import CatalogTurnBackPageItem from './catalog-turn-back-page-item';
-import ContentContainer from '../style/content-container';
-import ContentTitle from '../style/content-title';
-import * as SharedStyle from '../../shared-style';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import CatalogItem from "./catalog-item";
+import CatalogBreadcrumb from "./catalog-breadcrumb";
+import CatalogPageItem from "./catalog-page-item";
+import CatalogTurnBackPageItem from "./catalog-turn-back-page-item";
+import ContentContainer from "../style/content-container";
+import ContentTitle from "../style/content-title";
+import IconNext from "react-icons/lib/md/navigate-next";
+import * as SharedStyle from "../../shared-style";
 
 const containerStyle = {
-  position: 'fixed',
-  width:'calc( 100% - 51px)',
-  height:'calc( 100% - 20px)',
-  backgroundColor:'#FFF',
-  padding:'1em',
-  left:50,
-  overflowY:'auto',
-  overflowX:'hidden',
-  zIndex:10
+  position: "absolute",
+  width: "100vw",
+  height: "100vh",
+  backgroundColor: "#FFF",
+  padding: "1em",
+  overflowY: "auto",
+  overflowX: "hidden",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  zIndex: 10,
 };
 
 const itemsStyle = {
-  display: 'grid',
-  gridTemplateColumns: 'repeat(auto-fit, minmax(14em, 1fr))',
-  gridGap: '10px',
-  marginTop: '1em'
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fit, minmax(14em, 1fr))",
+  gridGap: "10px",
+  marginTop: "1em",
 };
 
 const searchContainer = {
-  width: '100%',
-  height: '3em',
-  padding: '0.625em',
-  background: '#f7f7f9',
-  border: '1px solid #e1e1e8',
-  cursor: 'pointer',
-  position: 'relative',
-  boxShadow: '0 1px 6px 0 rgba(0, 0, 0, 0.11), 0 1px 4px 0 rgba(0, 0, 0, 0.11)',
-  borderRadius: '2px',
-  transition: 'all .2s ease-in-out',
-  WebkitTransition: 'all .2s ease-in-out',
-  marginBottom: '1em'
+  width: "100%",
+  height: "3em",
+  padding: "0.625em",
+  background: "#f7f7f9",
+  border: "1px solid #e1e1e8",
+  cursor: "pointer",
+  position: "relative",
+  boxShadow: "0 1px 6px 0 rgba(0, 0, 0, 0.11), 0 1px 4px 0 rgba(0, 0, 0, 0.11)",
+  borderRadius: "2px",
+  transition: "all .2s ease-in-out",
+  WebkitTransition: "all .2s ease-in-out",
+  marginBottom: "1em",
 };
 
 const searchText = {
-  width: '8em',
-  display: 'inline-block'
+  width: "8em",
+  display: "inline-block",
 };
 
 const searchInput = {
-  width: 'calc( 100% - 10em )',
-  height: '2em',
-  margin: '0',
-  padding: '0 1em',
-  border: '1px solid #EEE'
+  width: "calc( 100% - 10em )",
+  height: "2em",
+  margin: "0",
+  padding: "0 1em",
+  border: "1px solid #EEE",
 };
 
 const historyContainer = {
   ...searchContainer,
-  padding: '0.2em 0.625em'
+  padding: "0.2em 0.625em",
 };
 
 const historyElementStyle = {
-  width: 'auto',
-  height: '2em',
-  lineHeight: '2em',
-  textAlign:'center',
-  borderRadius: '1em',
-  display: 'inline-block',
-  cursor: 'pointer',
+  width: "auto",
+  height: "2em",
+  lineHeight: "2em",
+  textAlign: "center",
+  borderRadius: "1em",
+  display: "inline-block",
+  cursor: "pointer",
   backgroundColor: SharedStyle.PRIMARY_COLOR.alt,
   color: SharedStyle.PRIMARY_COLOR.text_main,
-  textTransform: 'capitalize',
-  margin: '0.25em',
-  padding: '0 1em'
+  textTransform: "capitalize",
+  margin: "0.25em",
+  padding: "0 1em",
 };
 
 export default class CatalogList extends Component {
-
   constructor(props, context) {
     super(props);
 
     let page = props.state.catalog.page;
     let currentCategory = context.catalog.getCategory(page);
     let categoriesToDisplay = currentCategory.categories;
-    let elementsToDisplay = currentCategory.elements.filter(element => element.info.visibility ? element.info.visibility.catalog : true );
+    let elementsToDisplay = currentCategory.elements.filter((element) =>
+      element.info.visibility ? element.info.visibility.catalog : true
+    );
 
     this.state = {
       categories: currentCategory.categories,
       elements: elementsToDisplay,
-      matchString: '',
-      matchedElements: []
+      matchString: "",
+      matchedElements: [],
     };
   }
 
-  flattenCategories( categories ) {
+  flattenCategories(categories) {
     let toRet = [];
 
-    for( let x = 0; x < categories.length; x++ )
-    {
+    for (let x = 0; x < categories.length; x++) {
       let curr = categories[x];
-      toRet = toRet.concat( curr.elements );
-      if( curr.categories.length ) toRet = toRet.concat( this.flattenCategories ( curr.categories ) );
+      toRet = toRet.concat(curr.elements);
+      if (curr.categories.length)
+        toRet = toRet.concat(this.flattenCategories(curr.categories));
     }
 
     return toRet;
   }
 
-  matcharray( text ) {
-
-    let array = this.state.elements.concat( this.flattenCategories( this.state.categories ) );
+  matcharray(text) {
+    let array = this.state.elements.concat(
+      this.flattenCategories(this.state.categories)
+    );
 
     let filtered = [];
 
-    if( text != '' ) {
-      let regexp = new RegExp( text, 'i');
+    if (text != "") {
+      let regexp = new RegExp(text, "i");
       for (let i = 0; i < array.length; i++) {
         if (regexp.test(array[i].info.title)) {
           filtered.push(array[i]);
@@ -123,90 +128,177 @@ export default class CatalogList extends Component {
 
     this.setState({
       matchString: text,
-      matchedElements: filtered
+      matchedElements: filtered,
     });
-  };
+  }
 
-  select( element ) {
-
+  select(element) {
     switch (element.prototype) {
-      case 'lines':
+      case "lines":
         this.context.linesActions.selectToolDrawingLine(element.name);
         break;
-      case 'items':
+      case "items":
         this.context.itemsActions.selectToolDrawingItem(element.name);
         break;
-      case 'holes':
+      case "holes":
         this.context.holesActions.selectToolDrawingHole(element.name);
         break;
     }
 
-    this.context.projectActions.pushLastSelectedCatalogElementToHistory(element);
+    this.context.projectActions.pushLastSelectedCatalogElementToHistory(
+      element
+    );
   }
 
   render() {
-
     let page = this.props.state.catalog.page;
     let currentCategory = this.context.catalog.getCategory(page);
     let categoriesToDisplay = currentCategory.categories;
-    let elementsToDisplay = currentCategory.elements.filter(element => element.info.visibility ? element.info.visibility.catalog : true );
+    let elementsToDisplay = currentCategory.elements.filter((element) =>
+      element.info.visibility ? element.info.visibility.catalog : true
+    );
 
     let breadcrumbComponent = null;
 
-    if (page !== 'root') {
-
+    if (page !== "root") {
       let breadcrumbsNames = [];
 
-      this.props.state.catalog.path.forEach(pathName => {
+      this.props.state.catalog.path.forEach((pathName) => {
         breadcrumbsNames.push({
           name: this.context.catalog.getCategory(pathName).label,
-          action: () => projectActions.goBackToCatalogPage(pathName)
+          action: () => projectActions.goBackToCatalogPage(pathName),
         });
       });
 
-      breadcrumbsNames.push({name: currentCategory.label, action: ''});
+      breadcrumbsNames.push({ name: currentCategory.label, action: "" });
 
-      breadcrumbComponent = (<CatalogBreadcrumb names={breadcrumbsNames}/>);
+      breadcrumbComponent = <CatalogBreadcrumb names={breadcrumbsNames} />;
     }
 
     let pathSize = this.props.state.catalog.path.size;
 
-    let turnBackButton = pathSize > 0 ? (
-      <CatalogTurnBackPageItem key={pathSize} page={this.context.catalog.categories[this.props.state.catalog.path.get(pathSize - 1)]}/>) : null;
+    let turnBackButton =
+      pathSize > 0 ? (
+        <CatalogTurnBackPageItem
+          key={pathSize}
+          page={
+            this.context.catalog.categories[
+              this.props.state.catalog.path.get(pathSize - 1)
+            ]
+          }
+        />
+      ) : null;
 
-
-    let selectedHistory = this.props.state.get('selectedElementsHistory');
-    let selectedHistoryElements = selectedHistory.map( ( el, ind ) =>
-      <div key={ind} style={historyElementStyle} title={el.name} onClick={() => this.select(el) }>{el.name}</div>
-    );
+    let selectedHistory = this.props.state.get("selectedElementsHistory");
+    let selectedHistoryElements = selectedHistory.map((el, ind) => (
+      <div
+        key={ind}
+        style={historyElementStyle}
+        title={el.name}
+        onClick={() => this.select(el)}
+      >
+        {el.name}
+      </div>
+    ));
 
     return (
-      <ContentContainer width={this.props.width} height={this.props.height} style={{...containerStyle, ...this.props.style}}>
-        <ContentTitle>{this.context.translator.t('Catalog')}</ContentTitle>
-        {breadcrumbComponent}
-        <div style={searchContainer}>
-          <span style={searchText}>{this.context.translator.t('Search Element')}</span>
-          <input type="text" style={searchInput} onChange={( e ) => { this.matcharray( e.target.value ); } }/>
+      <div style={{ ...containerStyle, ...this.props.style }}>
+        <div
+          style={{
+            display: "flex",
+            margin: "auto",
+            flexDirection: "column",
+            width: 450,
+            height: "100%",
+          }}
+        >
+          <div
+            style={{
+              width: "100%",
+              display: "flex",
+              justifyContent: "space-between",
+              marginTop: "5px",
+              paddingTop: 5,
+              paddingBottom: 5,
+            }}
+          >
+            <h5
+              className="text-2xl font-bold font-manrope text-secondary"
+              style={{
+                fontSize: 25,
+                padding: 0,
+                margin: 0,
+              }}
+            >
+              Eşyalar
+            </h5>
+            <button
+              className="flex justify-center w-8 min-w-11 min-h-11 h-11 bg-ghost-default text-primary1"
+              style={{
+                borderRadius: "100%",
+                height: 45,
+                width: 45,
+                border: 0,
+                backgroundColor: "#8E43E7",
+                color: "white",
+                fontSize: 20,
+              }}
+            >
+              <span className="text-primary1">
+                <IconNext />
+              </span>
+            </button>
+          </div>
+          <div
+            style={{
+              marginBottom: "auto",
+              marginTop: 20,
+            }}
+          >
+            <input
+              className={
+                "relative block w-full p-4 text-base font-medium bg-white border-black border-solid text-primary-default border-primary border-default font-manrope focus:outline-none rounded rounded-12 "
+              }
+              onChange={(e) => {
+                this.matcharray(e.target.value);
+              }}
+              style={{
+                width: "100%",
+                padding: 5,
+                paddingBottom: 10,
+                paddingTop: 10,
+                borderRadius: 5,
+                border: "1px solid #CCCCCC",
+              }}
+            />
+          </div>
+
+          {/* selectedHistory.size ? (
+            <div style={historyContainer}>
+              <span>{this.context.translator.t("Last Selected")}</span>
+              {selectedHistoryElements}
+            </div>
+          ) : null */}
+          <div style={itemsStyle}>
+            {this.state.matchString === ""
+              ? [
+                  turnBackButton,
+                  Object.values(this.state.categories).map((category) => {
+                    return category.elements.map((elem, i) => {
+                      return <CatalogItem key={elem.name} element={elem} />;
+                    });
+                  }),
+                  elementsToDisplay.map((elem) => {
+                    return <CatalogItem key={elem.name} element={elem} />;
+                  }),
+                ]
+              : this.state.matchedElements.map((elem) => (
+                  <CatalogItem key={elem.name} element={elem} />
+                ))}
+          </div>
         </div>
-        { selectedHistory.size ?
-          <div style={historyContainer}>
-            <span>{this.context.translator.t('Last Selected')}</span>
-            {selectedHistoryElements}
-          </div> :
-          null
-        }
-        <div style={itemsStyle}>
-          {
-            this.state.matchString === '' ? [
-              turnBackButton,
-              categoriesToDisplay.map(cat => <CatalogPageItem key={cat.name} page={cat} oldPage={currentCategory}/>),
-              elementsToDisplay.map(elem => <CatalogItem key={elem.name} element={elem}/>)
-            ] :
-            this.state.matchedElements.map(elem => <CatalogItem key={elem.name} element={elem}/>)
-          }
-        </div>
-      </ContentContainer>
-    )
+      </div>
+    );
   }
 }
 
@@ -214,7 +306,7 @@ CatalogList.propTypes = {
   state: PropTypes.object.isRequired,
   width: PropTypes.number.isRequired,
   height: PropTypes.number.isRequired,
-  style: PropTypes.object
+  style: PropTypes.object,
 };
 
 CatalogList.contextTypes = {
@@ -223,5 +315,5 @@ CatalogList.contextTypes = {
   itemsActions: PropTypes.object.isRequired,
   linesActions: PropTypes.object.isRequired,
   holesActions: PropTypes.object.isRequired,
-  projectActions: PropTypes.object.isRequired
+  projectActions: PropTypes.object.isRequired,
 };
