@@ -27,7 +27,7 @@ export default function PanelElementEditor(
   { state },
   { projectActions, translator }
 ) {
-  let { scene, mode } = state;
+  let { scene, mode, viewOnly } = state;
 
   if (
     ![
@@ -58,7 +58,12 @@ export default function PanelElementEditor(
       name={translator.t("Properties: [{0}] {1}", element.type, element.id)}
     >
       <div style={{ padding: "5px 15px" }}>
-        <ElementEditor element={element} layer={layer} state={state} />
+        <ElementEditor
+          viewOnly={viewOnly}
+          element={element}
+          layer={layer}
+          state={state}
+        />
       </div>
     </Panel>
   );

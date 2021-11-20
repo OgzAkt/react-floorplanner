@@ -1,6 +1,6 @@
 "use strict";
 
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 
 import {
@@ -13,6 +13,11 @@ import {
 } from "react-svg-pan-zoom";
 import * as constants from "../../constants";
 import State from "./state";
+import Cursor from "../../assets/images/Cursor.svg";
+import Hand from "../../assets/images/Hand.svg";
+import ZoomIn from "../../assets/images/ZoomIn.svg";
+import ZoomOut from "../../assets/images/ZoomOut.svg";
+import FullScreen from "react-icons/lib/md/fullscreen";
 
 function mode2Tool(mode) {
   switch (mode) {
@@ -101,7 +106,7 @@ function extractElementData(node) {
 }
 
 export default function Viewer2D(
-  { state, width, height },
+  { state, width, height, viewOnly },
   {
     viewer2DActions,
     linesActions,
@@ -316,6 +321,9 @@ export default function Viewer2D(
   };
 
   let onChangeValue = (value) => {
+    if (viewOnly) {
+      viewer2DActions.selectToolPan();
+    }
     projectActions.updateZoomScale(value.a);
     return viewer2DActions.updateCameraView(value);
   };
@@ -339,20 +347,153 @@ export default function Viewer2D(
         break;
     }
   };
+
+  const customToolBar = (props) => {
+    return (
+      <div
+        style={{
+          backgroundColor: "white",
+          position: "absolute",
+          display: "flex",
+          border: "1px solid rgba(204, 204, 204, 1)",
+          flexDirection: "row",
+          justifyContent: "space-around",
+          top: 15,
+          padding: 15,
+          color: "rgba(128, 128, 128, 1)",
+          left: 20,
+          borderRadius: 15,
+          paddingLeft: 35,
+          paddingRight: 35,
+        }}
+      >
+        {!viewOnly && (
+          <label
+            style={{
+              width: "40px",
+              height: "40px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              marginRight: 25,
+              cursor: "pointer",
+              borderRadius: 5,
+
+              backgroundColor:
+                props.tool === "auto" ? "rgba(142, 67, 231, 1)" : "white",
+            }}
+            onClick={() => props.onChangeTool(TOOL_NONE)}
+          >
+            <img
+              style={{
+                width: "16px",
+              }}
+              src={Cursor}
+            />
+          </label>
+        )}
+
+        <label
+          style={{
+            width: "40px",
+            height: "40px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            marginRight: 25,
+            cursor: "pointer",
+            borderRadius: 5,
+            backgroundColor:
+              props.tool === TOOL_PAN ? "rgba(142, 67, 231, 1)" : "white",
+          }}
+          onClick={() => props.onChangeTool(TOOL_PAN)}
+        >
+          <img
+            style={{
+              width: "20px",
+            }}
+            src={Hand}
+          />
+        </label>
+        <label
+          style={{
+            width: "40px",
+            height: "40px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            marginRight: 25,
+            cursor: "pointer",
+            borderRadius: 5,
+            backgroundColor:
+              props.tool === TOOL_ZOOM_IN ? "rgba(142, 67, 231, 1)" : "white",
+          }}
+          onClick={() => props.onChangeTool(TOOL_ZOOM_IN)}
+        >
+          <img
+            style={{
+              width: "20px",
+            }}
+            src={ZoomIn}
+          />
+        </label>
+        <label
+          style={{
+            width: "40px",
+            height: "40px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            marginRight: 25,
+            cursor: "pointer",
+            borderRadius: 5,
+            backgroundColor:
+              props.tool === TOOL_ZOOM_OUT ? "rgba(142, 67, 231, 1)" : "white",
+          }}
+          onClick={() => props.onChangeTool(TOOL_ZOOM_OUT)}
+        >
+          <img
+            style={{
+              width: "17px",
+            }}
+            src={ZoomOut}
+          />
+        </label>
+        <label
+          style={{
+            width: "40px",
+            height: "40px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: "pointer",
+          }}
+          onClick={() => {}}
+        >
+          <FullScreen size={30} />
+        </label>
+      </div>
+    );
+  };
+
   return (
     <ReactSVGPanZoom
       width={width}
       height={height}
       value={viewer2D.isEmpty() ? null : viewer2D.toJS()}
-      onChangeValue={onChangeValue}
+      onChangeValue={(value) => {
+        onChangeValue(value);
+      }}
       tool={mode2Tool(mode)}
       onChangeTool={onChangeTool}
       detectAutoPan={mode2DetectAutopan(mode)}
       onMouseDown={onMouseDown}
       onMouseMove={onMouseMove}
       onMouseUp={onMouseUp}
+      background="#fff"
       miniaturePosition="none"
-      toolbarPosition="right"
+      toolbarPosition="top"
+      customToolbar={customToolBar}
     >
       <svg width={scene.width} height={scene.height}>
         <g style={Object.assign(mode2Cursor(mode), mode2PointerEvents(mode))}>

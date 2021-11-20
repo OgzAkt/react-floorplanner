@@ -54,7 +54,8 @@ class ReactPlanner extends Component {
   }
 
   render() {
-    let { width, height, state, stateExtractor, ...props } = this.props;
+    let { width, height, state, stateExtractor, viewOnly, ...props } =
+      this.props;
 
     let contentW = width - toolbarW;
     let toolbarH = height;
@@ -65,20 +66,25 @@ class ReactPlanner extends Component {
 
     return (
       <div style={{ ...wrapperStyle, height }}>
-        <Toolbar
-          width={toolbarW}
-          height={toolbarH}
-          state={extractedState}
-          {...props}
-        />
+        {!viewOnly && (
+          <Toolbar
+            width={toolbarW}
+            height={toolbarH}
+            state={extractedState}
+            {...props}
+          />
+        )}
+
         <Content
           width={contentW}
           height={contentH}
           state={extractedState}
+          viewOnly={viewOnly}
           {...props}
           onWheel={(event) => event.preventDefault()}
         />
         <Sidebar
+          viewOnly={viewOnly}
           width={sidebarW}
           height={sidebarH}
           state={extractedState}

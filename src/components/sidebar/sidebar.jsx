@@ -14,7 +14,13 @@ const STYLE = {
   paddingBottom: "20px",
 };
 
-export default function Sidebar({ state, width, height, sidebarComponents }) {
+export default function Sidebar({
+  state,
+  width,
+  viewOnly,
+  height,
+  sidebarComponents,
+}) {
   return (
     <div
       style={{
@@ -30,7 +36,7 @@ export default function Sidebar({ state, width, height, sidebarComponents }) {
       className="sidebar"
     >
       <div className="properties">
-        <PanelElementEditor state={state} />
+        <PanelElementEditor viewOnly={viewOnly} state={state} />
       </div>
     </div>
   );
