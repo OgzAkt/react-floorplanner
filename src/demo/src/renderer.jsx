@@ -54,7 +54,6 @@ ReactDOM.render(
           width={width}
           height={height}
           plugins={plugins}
-          viewOnly={true}
           toolbarButtons={toolbarButtons}
           stateExtractor={(state) => state.get("react-floorplanner")}
         />
