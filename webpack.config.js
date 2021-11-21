@@ -65,12 +65,12 @@ module.exports = function (env) {
     module: {
       rules: [
         {
-          test: /\.(ttf|eot|svg|woff(2)?)(\?[a-z0-9=&.]+)?$/,
+          test: /\.ttf|eot|svg|woff(2?)\?[a-z0-9=&.]+?$/,
           include: [Path.join(__dirname, "src/assets")],
           loader: "file-loader?name=assets/[name].[ext]",
         },
         {
-          test: /\.(js|jsx)$/,
+          test: /\.js$|jsx/,
           exclude: /node_modules/,
           use: [
             {
@@ -84,7 +84,7 @@ module.exports = function (env) {
           ],
         },
         {
-          test: /\.(jpe?g|png|gif|mtl|obj)$/i,
+          test: /\.jpe?g|png|gif|mtl|obj$/i,
           use: [
             {
               loader: "file-loader",
